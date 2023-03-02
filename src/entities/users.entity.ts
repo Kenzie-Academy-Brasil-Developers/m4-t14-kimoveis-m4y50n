@@ -1,13 +1,4 @@
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToMany,
-	ManyToOne,
-	OneToMany,
-	OneToOne,
-	PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import Schedule from "./schedulesUsersProfile.entity";
 
 @Entity("users")
