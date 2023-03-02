@@ -5,6 +5,7 @@ import {
 	OneToMany,
 	OneToOne,
 	JoinColumn,
+	ManyToOne,
 } from "typeorm";
 import Address from "./addresses.entity";
 import Category from "./categories.entity";
@@ -39,7 +40,7 @@ class RealEstate {
 	@JoinColumn()
 	address: Address;
 
-	@OneToMany(() => Category, (category) => category.realEstate)
+	@ManyToOne(() => Category, (category) => category.realEstate)
 	category: Category[];
 }
 
