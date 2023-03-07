@@ -1,27 +1,33 @@
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
-import { iUsersCreate, iUsersRepo } from "../../interfaces/users.interfaces";
+import {
+	iUsers,
+	iUsersPartial,
+	iUsersRepo,
+} from "../../interfaces/users.interfaces";
 
-const createUsersService = async (payload: any): Promise<iUsersCreate> => {
+const updateUsersService = async (
+	payload: any,
+	userId: number
+): Promise<iUsers> => {
 	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
 
 	const dateNow: Date = new Date(Date.now());
 
-	const validateData: User = {
+	const validateData: iUsersPartial = {
 		...payload,
-		createdAt: dateNow,
 		updatedAt: dateNow,
 	};
 
 	const userData = await usersRepo
 		.createQueryBuilder()
-		.insert()
-		.into(User)
-		.values([validateData])
+		.update(User)
+		.set(validateData)
+		.where("id = :id", { id: userId })
 		.returning("*")
 		.execute();
 
 	return userData.raw[0];
 };
 
-export default createUsersService;
+export default updateUsersService;

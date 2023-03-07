@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
-import { iUsersCreate } from "../interfaces/users.interfaces";
+import { iUsers, iUsersCreate } from "../interfaces/users.interfaces";
 import createUsersService from "../services/users/createUsers.service";
+import deleteUsersService from "../services/users/deleteUsers.service";
 import getAllUsersService from "../services/users/getAllUsers.service";
+import updateUsersService from "../services/users/updateUsers.service";
 
 const getAllUsersController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	const allUsers = await getAllUsersService();
+	const allUsers: iUsers[] = await getAllUsersService();
 
 	return res.status(200).json(allUsers);
 };
@@ -27,14 +29,23 @@ const updateUsersController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	return res.status(200).json({ message: "users patch" });
+	const payload: any = req.body,
+		userId: number = parseInt(req.params.id);
+
+	const updatedData: iUsersCreate = await updateUsersService(payload, userId);
+
+	return res.status(200).json(updatedData);
 };
 
 const deleteUsersController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	return res.status(204).json({ message: "users delete" });
+	const userId: number = parseInt(req.params.id);
+
+	await deleteUsersService(userId);
+
+	return res.status(204).send();
 };
 
 export {

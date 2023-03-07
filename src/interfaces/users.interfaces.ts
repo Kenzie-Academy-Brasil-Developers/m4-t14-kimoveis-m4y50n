@@ -7,6 +7,5 @@ type iUsers = z.infer<typeof usersSchema>;
 type iUsersCreate = z.infer<typeof usersCreateSchema>;
 type iUsersRepo = Repository<User>;
 type iUsersPartial = DeepPartial<User>;
-type iUsersResult = InsertResult;
 
-export { iUsers, iUsersCreate, iUsersRepo, iUsersPartial, iUsersResult };
+export { iUsers, iUsersCreate, iUsersRepo, iUsersPartial };
