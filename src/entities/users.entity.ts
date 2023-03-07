@@ -25,7 +25,7 @@ class User {
 	updatedAt: Date;
 
 	@Column({ nullable: true })
-	deleteAt?: Date;
+	deletedAt?: Date;
 
 	@OneToMany(() => Schedule, (schedule) => schedule.user)
 	schedule: Schedule[];
