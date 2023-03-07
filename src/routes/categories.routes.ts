@@ -2,14 +2,14 @@ import { Router } from "express";
 import {
 	createCategoriesController,
 	getAllCategoriesController,
+	getAllRealEstateByCategoryController,
 } from "../controllers/categories.controllers";
 
 const categoriesRoutes: Router = Router();
 
 categoriesRoutes.get("", getAllCategoriesController);
 
-//falta criar a relação entre categories e realestate
-categoriesRoutes.get("/:id/realestate", () => {});
+categoriesRoutes.get("/:id/realestate", getAllRealEstateByCategoryController);
 
 categoriesRoutes.post("", createCategoriesController);
 

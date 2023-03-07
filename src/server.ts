@@ -8,7 +8,7 @@ AppDataSource.initialize()
 		const PORT = process.env.PORT || 3000;
 
 		app.listen(PORT, () => {
-			console.log(`App is running on hettps://localhost:${PORT}`);
+			console.log(`App is running on https://localhost:${PORT}`);
 		});
 	})
 	.catch((err) => {

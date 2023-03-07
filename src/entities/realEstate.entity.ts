@@ -36,7 +36,7 @@ class RealEstate {
 	})
 	schedule: Schedule[];
 
-	@OneToOne(() => Address)
+	@OneToOne(() => Address, { nullable: false })
 	@JoinColumn()
 	address: Address;
 
