@@ -5,11 +5,17 @@ import {
 	getAllUsersController,
 	updateUsersController,
 } from "../controllers/users.controllers";
+import ensureDataIsValidMiddleware from "../middlewares/ensureDataIsValid.middleware";
+import { usersCreateSchema } from "../schemas/users.schemas";
 
 const usersRoutes: Router = Router();
 
 usersRoutes.get("", getAllUsersController);
-usersRoutes.post("", createUsersController);
+usersRoutes.post(
+	"",
+	ensureDataIsValidMiddleware(usersCreateSchema),
+	createUsersController
+);
 usersRoutes.patch("/:id", updateUsersController);
 usersRoutes.delete("/:id", deleteUsersController);
 

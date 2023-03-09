@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { iUsers, iUsersCreate } from "../interfaces/users.interfaces";
+import {
+	iUsersCreate,
+	iUsersWithOutPass,
+} from "../interfaces/users.interfaces";
 import createUsersService from "../services/users/createUsers.service";
 import deleteUsersService from "../services/users/deleteUsers.service";
 import getAllUsersService from "../services/users/getAllUsers.service";
@@ -9,7 +12,7 @@ const getAllUsersController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	const allUsers: iUsers[] = await getAllUsersService();
+	const allUsers: iUsersWithOutPass[] = await getAllUsersService();
 
 	return res.status(200).json(allUsers);
 };
@@ -20,7 +23,7 @@ const createUsersController = async (
 ): Promise<Response> => {
 	const payload: any = req.body;
 
-	const userData: iUsersCreate = await createUsersService(payload);
+	const userData: iUsersWithOutPass = await createUsersService(payload);
 
 	return res.status(201).json(userData);
 };

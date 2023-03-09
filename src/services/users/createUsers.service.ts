@@ -1,27 +1,25 @@
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
-import { iUsersCreate, iUsersRepo } from "../../interfaces/users.interfaces";
+import {
+	iUsersRepo,
+	iUsersWithOutPass,
+} from "../../interfaces/users.interfaces";
+import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
-const createUsersService = async (payload: any): Promise<iUsersCreate> => {
+const createUsersService = async (payload: any): Promise<iUsersWithOutPass> => {
 	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
-
-	const dateNow: Date = new Date(Date.now());
-
-	const validateData: User = {
-		...payload,
-		createdAt: dateNow,
-		updatedAt: dateNow,
-	};
 
 	const userData = await usersRepo
 		.createQueryBuilder()
 		.insert()
 		.into(User)
-		.values([validateData])
+		.values([payload])
 		.returning("*")
 		.execute();
 
-	return userData.raw[0];
+	const userWithout = usersWithoutPassSchema.parse(userData.raw[0]);
+
+	return userWithout;
 };
 
 export default createUsersService;
