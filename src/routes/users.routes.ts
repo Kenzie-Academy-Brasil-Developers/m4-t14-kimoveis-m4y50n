@@ -6,7 +6,7 @@ import {
 	updateUsersController,
 } from "../controllers/users.controllers";
 import ensureDataIsValidMiddleware from "../middlewares/ensureDataIsValid.middleware";
-import { usersCreateSchema } from "../schemas/users.schemas";
+import { usersCreateSchema, usersUpdateSchema } from "../schemas/users.schemas";
 
 const usersRoutes: Router = Router();
 
@@ -16,7 +16,11 @@ usersRoutes.post(
 	ensureDataIsValidMiddleware(usersCreateSchema),
 	createUsersController
 );
-usersRoutes.patch("/:id", updateUsersController);
+usersRoutes.patch(
+	"/:id",
+	ensureDataIsValidMiddleware(usersUpdateSchema),
+	updateUsersController
+);
 usersRoutes.delete("/:id", deleteUsersController);
 
 export default usersRoutes;

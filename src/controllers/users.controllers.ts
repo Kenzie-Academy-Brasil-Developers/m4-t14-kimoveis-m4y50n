@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import {
-	iUsersCreate,
-	iUsersWithOutPass,
-} from "../interfaces/users.interfaces";
+import { iUsersWithOutPass } from "../interfaces/users.interfaces";
 import createUsersService from "../services/users/createUsers.service";
 import deleteUsersService from "../services/users/deleteUsers.service";
 import getAllUsersService from "../services/users/getAllUsers.service";
@@ -35,7 +32,10 @@ const updateUsersController = async (
 	const payload: any = req.body,
 		userId: number = parseInt(req.params.id);
 
-	const updatedData: iUsersCreate = await updateUsersService(payload, userId);
+	const updatedData: iUsersWithOutPass = await updateUsersService(
+		payload,
+		userId
+	);
 
 	return res.status(200).json(updatedData);
 };

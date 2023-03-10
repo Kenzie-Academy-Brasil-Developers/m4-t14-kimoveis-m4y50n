@@ -12,17 +12,10 @@ const updateUsersService = async (
 ): Promise<iUsers> => {
 	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
 
-	const dateNow: Date = new Date(Date.now());
-
-	const validateData: iUsersPartial = {
-		...payload,
-		updatedAt: dateNow,
-	};
-
 	const userData = await usersRepo
 		.createQueryBuilder()
 		.update(User)
-		.set(validateData)
+		.set(payload)
 		.where("id = :id", { id: userId })
 		.returning("*")
 		.execute();
