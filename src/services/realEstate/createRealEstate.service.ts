@@ -1,13 +1,16 @@
 import { AppDataSource } from "../../data-source";
-import { Address, RealEstate } from "../../entities";
-import { iAddressesRepo } from "../../interfaces/addresses.interfaces";
+import { RealEstate } from "../../entities";
+import { iAddresses } from "../../interfaces/addresses.interfaces";
 import {
 	iRealEstate,
+	iRealEstateAddress,
 	iRealEstateRepo,
 } from "../../interfaces/realEstate.interfaces";
 import createAddressesService from "../addresses/createAddresses.service";
 
-const createRealEstateService = async (payload: any): Promise<iRealEstate> => {
+const createRealEstateService = async (
+	payload: any
+): Promise<iRealEstateAddress> => {
 	const realEstateRepo: iRealEstateRepo =
 		AppDataSource.getRepository(RealEstate);
 
@@ -16,11 +19,11 @@ const createRealEstateService = async (payload: any): Promise<iRealEstate> => {
 	const dateNow: Date = new Date(Date.now());
 
 	//create address and retrive addressId
-	const addressId = await createAddressesService(addressData);
+	const address: iAddresses = await createAddressesService(addressData);
 
-	const realEstateValidateData: any = {
+	const realEstateValidateData: iRealEstate = {
 		...realEstateData,
-		address: addressId.id,
+		address: address.id,
 		createdAt: dateNow,
 		updatedAt: dateNow,
 	};
@@ -41,7 +44,7 @@ const createRealEstateService = async (payload: any): Promise<iRealEstate> => {
 		])
 		.execute();
 
-	const realEstateAddress = {
+	const realEstateAddress: iRealEstateAddress = {
 		...realEstate.raw[0],
 		address: addressData,
 	};

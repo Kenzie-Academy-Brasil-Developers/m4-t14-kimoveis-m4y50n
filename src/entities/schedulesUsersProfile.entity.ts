@@ -10,14 +10,18 @@ class Schedule {
 	@Column()
 	date: Date;
 
-	@Column()
-	hour: number;
+	@Column({ type: "time" })
+	hour: Date;
 
-	@ManyToOne(() => User, (user) => user.schedule, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, (user) => user.schedule, {
+		onDelete: "CASCADE",
+		nullable: false,
+	})
 	user: User;
 
 	@ManyToOne(() => RealEstate, (realEstate) => realEstate.schedule, {
 		onDelete: "RESTRICT",
+		nullable: false,
 	})
 	realEstate: RealEstate;
 }

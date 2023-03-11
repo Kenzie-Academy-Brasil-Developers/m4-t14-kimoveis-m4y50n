@@ -1,17 +1,17 @@
 import { AppDataSource } from "../../data-source";
 import { RealEstate } from "../../entities";
 import {
-	iRealEstate,
+	iRealEstateAddress,
 	iRealEstateRepo,
 } from "../../interfaces/realEstate.interfaces";
 
 const getAllRealEstateByCategoryService = async (
 	categoryId: number
-): Promise<iRealEstate[]> => {
+): Promise<iRealEstateAddress[]> => {
 	const realEstateRepo: iRealEstateRepo =
 		AppDataSource.getRepository(RealEstate);
 
-	const realEstateByCategory = await realEstateRepo.find({
+	const realEstateByCategory: any = await realEstateRepo.find({
 		relations: {
 			category: true,
 			address: true,
@@ -23,7 +23,9 @@ const getAllRealEstateByCategoryService = async (
 		},
 	});
 
-	return realEstateByCategory;
+	const resRealEstateByCategory: iRealEstateAddress[] = realEstateByCategory;
+
+	return resRealEstateByCategory;
 };
 
 export default getAllRealEstateByCategoryService;
