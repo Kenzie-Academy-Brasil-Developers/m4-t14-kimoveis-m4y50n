@@ -1,23 +1,29 @@
 import { AppDataSource } from "../../data-source";
-import { Schedule } from "../../entities";
+import { RealEstate } from "../../entities";
 import { iSchedulesRealEstate } from "../../interfaces/schedules.interfaces";
+import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
 const getAllRealEstateSchedulesService = async (
 	realEstateId: number
 ): Promise<iSchedulesRealEstate[]> => {
-	const schedulesRepo = await AppDataSource.getRepository(Schedule);
+	const schedulesRepo = AppDataSource.getRepository(RealEstate);
 
-	const allRealStateSchedules: any = await schedulesRepo.find({
+	const allRealStateSchedules: any = await schedulesRepo.findOne({
 		relations: {
-			user: true,
-			realEstate: true,
+			schedule: {
+				user: true,
+			},
+			address: true,
+			category: true,
 		},
 		where: {
-			realEstate: {
-				id: realEstateId,
-			},
+			id: realEstateId,
 		},
 	});
+
+	allRealStateSchedules.schedule[0].user = usersWithoutPassSchema.parse(
+		allRealStateSchedules.schedule[0].user
+	);
 
 	const resAllRealStateSchedules: iSchedulesRealEstate[] =
 		allRealStateSchedules;

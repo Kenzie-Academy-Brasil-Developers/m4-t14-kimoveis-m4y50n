@@ -1,26 +1,26 @@
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
-import {
-	iUsers,
-	iUsersPartial,
-	iUsersRepo,
-} from "../../interfaces/users.interfaces";
+import { iUsersRepo } from "../../interfaces/users.interfaces";
+import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
 const updateUsersService = async (
 	payload: any,
 	userId: number
-): Promise<iUsers> => {
+): Promise<any> => {
 	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
 
-	const userData = await usersRepo
-		.createQueryBuilder()
-		.update(User)
-		.set(payload)
-		.where("id = :id", { id: userId })
-		.returning("*")
-		.execute();
+	await usersRepo.update(
+		{
+			id: userId,
+		},
+		{
+			...payload,
+		}
+	);
 
-	return userData.raw[0];
+	const updatedUser = await usersRepo.findOneBy({ id: userId });
+
+	return usersWithoutPassSchema.parse(updatedUser);
 };
 
 export default updateUsersService;

@@ -7,11 +7,11 @@ class Schedule {
 	@PrimaryGeneratedColumn("increment")
 	id: number;
 
-	@Column()
-	date: Date;
+	@Column({ type: "date" })
+	date: string;
 
 	@Column({ type: "time" })
-	hour: Date;
+	hour: string;
 
 	@ManyToOne(() => User, (user) => user.schedule, {
 		onDelete: "CASCADE",

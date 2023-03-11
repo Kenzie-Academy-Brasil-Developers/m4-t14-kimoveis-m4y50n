@@ -8,26 +8,6 @@ const ensureDataIsValidMiddleware =
 			throw new AppError("Missing object data", 400);
 		}
 
-		const dateNow: Date = new Date(Date.now());
-
-		const method = req.method.toUpperCase();
-
-		let time;
-		if (method === "POST") {
-			time = {
-				createdAt: dateNow,
-				updatedAt: dateNow,
-			};
-		} else if (method === "PATCH") {
-			time = {
-				updatedAt: dateNow,
-			};
-		} else {
-			return next();
-		}
-
-		req.body = { ...req.body, ...time };
-
 		const validatedData = schema.parse(req.body);
 
 		req.body = validatedData;

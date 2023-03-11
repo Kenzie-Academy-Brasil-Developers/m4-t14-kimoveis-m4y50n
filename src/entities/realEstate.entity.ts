@@ -6,6 +6,8 @@ import {
 	OneToOne,
 	JoinColumn,
 	ManyToOne,
+	CreateDateColumn,
+	UpdateDateColumn,
 } from "typeorm";
 import Address from "./addresses.entity";
 import Category from "./categories.entity";
@@ -25,11 +27,11 @@ class RealEstate {
 	@Column()
 	size: number;
 
-	@Column()
-	createdAt: Date;
+	@CreateDateColumn({ type: "date" })
+	createdAt: string;
 
-	@Column()
-	updatedAt: Date;
+	@UpdateDateColumn({ type: "date" })
+	updatedAt: string;
 
 	@OneToMany(() => Schedule, (schedule) => schedule.realEstate, {
 		onDelete: "RESTRICT",
@@ -41,7 +43,7 @@ class RealEstate {
 	address: Address;
 
 	@ManyToOne(() => Category, (category) => category.realEstate)
-	category: Category[];
+	category: Category;
 }
 
 export default RealEstate;

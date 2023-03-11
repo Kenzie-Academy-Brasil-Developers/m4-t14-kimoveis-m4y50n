@@ -1,6 +1,7 @@
 import { AppDataSource } from "../../data-source";
-import { RealEstate } from "../../entities";
+import { Category, RealEstate } from "../../entities";
 import { iAddresses } from "../../interfaces/addresses.interfaces";
+import { iCategoryRepo } from "../../interfaces/categories.interfaces";
 import {
 	iRealEstate,
 	iRealEstateAddress,
@@ -8,48 +9,33 @@ import {
 } from "../../interfaces/realEstate.interfaces";
 import createAddressesService from "../addresses/createAddresses.service";
 
-const createRealEstateService = async (
-	payload: any
-): Promise<iRealEstateAddress> => {
+const createRealEstateService = async (payload: any): Promise<any> => {
 	const realEstateRepo: iRealEstateRepo =
-		AppDataSource.getRepository(RealEstate);
+			AppDataSource.getRepository(RealEstate),
+		categoryRepo: iCategoryRepo = AppDataSource.getRepository(Category);
 
 	const { address: addressData, ...realEstateData } = payload;
-
-	const dateNow: Date = new Date(Date.now());
 
 	//create address and retrive addressId
 	const address: iAddresses = await createAddressesService(addressData);
 
+	const category = await categoryRepo.findOne({
+		where: {
+			id: realEstateData.categoryId,
+		},
+	});
+
 	const realEstateValidateData: iRealEstate = {
 		...realEstateData,
-		address: address.id,
-		createdAt: dateNow,
-		updatedAt: dateNow,
+		address: address,
+		category: category,
 	};
 
-	const realEstate = await realEstateRepo
-		.createQueryBuilder()
-		.insert()
-		.into(RealEstate)
-		.values([realEstateValidateData])
-		.returning([
-			"id",
-			"sold",
-			"value",
-			"size",
-			"createdAt",
-			"updatedAt",
-			"category",
-		])
-		.execute();
+	const realEstate = realEstateRepo.create(realEstateValidateData);
 
-	const realEstateAddress: iRealEstateAddress = {
-		...realEstate.raw[0],
-		address: addressData,
-	};
+	await realEstateRepo.save(realEstate);
 
-	return realEstateAddress;
+	return realEstate;
 };
 
 export default createRealEstateService;

@@ -1,4 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { hashSync } from "bcryptjs";
+import {
+	BeforeInsert,
+	BeforeUpdate,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from "typeorm";
 import Schedule from "./schedulesUsersProfile.entity";
 
 @Entity("users")
@@ -18,17 +29,23 @@ class User {
 	@Column({ length: 120 })
 	password: string;
 
-	@Column()
-	createdAt: Date;
+	@CreateDateColumn({ type: "date" })
+	createdAt: string;
 
-	@Column()
-	updatedAt: Date;
+	@UpdateDateColumn({ type: "date" })
+	updatedAt: string;
 
-	@Column({ nullable: true })
-	deletedAt?: Date;
+	@DeleteDateColumn({ type: "date" })
+	deletedAt: string;
 
 	@OneToMany(() => Schedule, (schedule) => schedule.user)
 	schedule: Schedule[];
+
+	@BeforeInsert()
+	@BeforeUpdate()
+	hashPassword() {
+		this.password = hashSync(this.password, 7);
+	}
 }
 
 export default User;

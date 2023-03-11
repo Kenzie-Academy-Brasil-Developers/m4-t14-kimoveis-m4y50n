@@ -6,21 +6,20 @@ const usersSchema = z.object({
 	name: z.string().min(3).max(45),
 	email: z.string().max(45),
 	admin: z.boolean().default(false),
-	password: z
-		.string()
-		.min(8)
-		.max(120)
-		.transform((pass) => {
-			return hashSync(pass, 7);
-		}),
-	createdAt: z.date(),
-	updatedAt: z.date(),
-	deletedAt: z.date().nullish(),
+	password: z.string().min(8).max(120),
+	createdAt: z.string(),
+	updatedAt: z.string(),
+	deletedAt: z.string().nullable(),
 });
 
 const usersWithoutPassSchema = usersSchema.omit({ password: true });
 
-const usersCreateSchema = usersSchema.omit({ id: true });
+const usersCreateSchema = usersSchema.omit({
+	id: true,
+	createdAt: true,
+	updatedAt: true,
+	deletedAt: true,
+});
 
 const usersUpdateSchema = usersCreateSchema.partial();
 

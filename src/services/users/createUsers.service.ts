@@ -1,25 +1,35 @@
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
+import { AppError } from "../../errors";
 import {
+	iUsersCreate,
 	iUsersRepo,
 	iUsersWithOutPass,
 } from "../../interfaces/users.interfaces";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
-const createUsersService = async (payload: any): Promise<iUsersWithOutPass> => {
+const createUsersService = async (
+	payload: iUsersCreate
+): Promise<iUsersWithOutPass> => {
 	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
 
-	const userData = await usersRepo
+	const checkEmail = await usersRepo
 		.createQueryBuilder()
-		.insert()
-		.into(User)
-		.values([payload])
-		.returning("*")
-		.execute();
+		.select()
+		.where("email = :email", { email: payload.email })
+		.getOne();
 
-	const userWithout = usersWithoutPassSchema.parse(userData.raw[0]);
+	if (checkEmail) {
+		throw new AppError("Email already exists", 409);
+	}
 
-	return userWithout;
+	const user: User = usersRepo.create(payload);
+
+	await usersRepo.save(user);
+
+	const resUser = usersWithoutPassSchema.parse(user);
+
+	return resUser;
 };
 
 export default createUsersService;
