@@ -1,12 +1,11 @@
 import { AppDataSource } from "../../data-source";
 import { RealEstate } from "../../entities";
 import { AppError } from "../../errors";
-import { iSchedulesRealEstate } from "../../interfaces/schedules.interfaces";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
 const getAllRealEstateSchedulesService = async (
 	realEstateId: number
-): Promise<iSchedulesRealEstate[]> => {
+): Promise<any> => {
 	const schedulesRepo = AppDataSource.getRepository(RealEstate);
 
 	const allRealStateSchedules: any = await schedulesRepo.findOne({
@@ -30,8 +29,7 @@ const getAllRealEstateSchedulesService = async (
 		allRealStateSchedules.schedule[0].user
 	);
 
-	const resAllRealStateSchedules: iSchedulesRealEstate[] =
-		allRealStateSchedules;
+	const resAllRealStateSchedules: any[] = allRealStateSchedules;
 
 	return resAllRealStateSchedules;
 };
