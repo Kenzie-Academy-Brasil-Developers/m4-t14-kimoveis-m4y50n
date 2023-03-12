@@ -5,7 +5,9 @@ import {
 	getAllUsersController,
 	updateUsersController,
 } from "../controllers/users.controllers";
+import ensureAdminMiddleware from "../middlewares/ensureAdmin.middleware";
 import ensureDataIsValidMiddleware from "../middlewares/ensureDataIsValid.middleware";
+import ensureTokenIsValidMiddleware from "../middlewares/ensureTokenIsValid.middleware";
 import { usersCreateSchema, usersUpdateSchema } from "../schemas/users.schemas";
 
 const usersRoutes: Router = Router();
@@ -19,8 +21,15 @@ usersRoutes.post(
 usersRoutes.patch(
 	"/:id",
 	ensureDataIsValidMiddleware(usersUpdateSchema),
+	ensureTokenIsValidMiddleware,
+	ensureAdminMiddleware,
 	updateUsersController
 );
-usersRoutes.delete("/:id", deleteUsersController);
+usersRoutes.delete(
+	"/:id",
+	ensureTokenIsValidMiddleware,
+	ensureAdminMiddleware,
+	deleteUsersController
+);
 
 export default usersRoutes;

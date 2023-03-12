@@ -1,5 +1,6 @@
 import { AppDataSource } from "../../data-source";
 import { RealEstate } from "../../entities";
+import { AppError } from "../../errors";
 import { iSchedulesRealEstate } from "../../interfaces/schedules.interfaces";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
@@ -20,6 +21,10 @@ const getAllRealEstateSchedulesService = async (
 			id: realEstateId,
 		},
 	});
+
+	if (!allRealStateSchedules) {
+		throw new AppError("Real Estate not found", 404);
+	}
 
 	allRealStateSchedules.schedule[0].user = usersWithoutPassSchema.parse(
 		allRealStateSchedules.schedule[0].user
