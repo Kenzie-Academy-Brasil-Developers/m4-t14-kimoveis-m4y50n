@@ -6,7 +6,10 @@ import { iSchedulesRepo } from "../../interfaces/schedules.interfaces";
 import { iUsersRepo } from "../../interfaces/users.interfaces";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
-const createSchedulesService = async (payload: any): Promise<String> => {
+const createSchedulesService = async (
+	payload: any,
+	userId: number
+): Promise<String> => {
 	const schedulesRepo: iSchedulesRepo = AppDataSource.getRepository(Schedule),
 		realEstateRepo: iRealEstateRepo = AppDataSource.getRepository(RealEstate),
 		userRepo: iUsersRepo = AppDataSource.getRepository(User);
@@ -19,14 +22,14 @@ const createSchedulesService = async (payload: any): Promise<String> => {
 		throw new AppError("RealEstate not found", 404);
 	}
 
-	const user = await userRepo.findOneBy({ id: payload.userId });
+	const user = await userRepo.findOneBy({ id: userId });
 
 	if (!user) {
 		throw new AppError("User not found", 404);
 	}
 
 	const scheduleExists = await schedulesRepo
-		.createQueryBuilder("")
+		.createQueryBuilder()
 		.where('"realEstateId" = :realEstateId', {
 			realEstateId: payload.realEstateId,
 		})
@@ -53,14 +56,17 @@ const createSchedulesService = async (payload: any): Promise<String> => {
 		throw new AppError("Invalid date, work days are monday to friday", 400);
 	}
 
-	const userAlreadySchedule = await schedulesRepo.findOneBy({
-		date: payload.date,
-		hour: payload.hour,
-	});
+	const userAlreadySchedule = await schedulesRepo
+		.createQueryBuilder()
+		.where("date = :date", { date: payload.date })
+		.andWhere("hour = :hour", { hour: payload.hour })
+		.andWhere('"userId" = :userId', { userId: userId })
+		.getOne();
 
 	if (userAlreadySchedule) {
 		throw new AppError(
-			"User schedule to this real estate at this date and time already exists"
+			"User schedule to this real estate at this date and time already exists",
+			409
 		);
 	}
 	//Schedules validation

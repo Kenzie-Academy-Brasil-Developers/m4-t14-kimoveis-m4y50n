@@ -19,11 +19,6 @@ const createRealEstateService = async (
 
 	const { address: addressData, ...realEstateData } = payload;
 
-	//create address and retrive
-	const address: iAddresses = await createAddressesService(
-		addressesCreateSchema.parse(addressData)
-	);
-
 	const category = await categoryRepo.findOneBy({
 		id: realEstateData.categoryId,
 	});
@@ -31,6 +26,11 @@ const createRealEstateService = async (
 	if (!category) {
 		throw new AppError("Category not found", 404);
 	}
+
+	//create address and retrive
+	const address: iAddresses = await createAddressesService(
+		addressesCreateSchema.parse(addressData)
+	);
 
 	const realEstateValidateData: any = {
 		...realEstateData,

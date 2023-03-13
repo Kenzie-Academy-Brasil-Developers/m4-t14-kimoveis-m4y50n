@@ -20,7 +20,6 @@ schedulesRoutes.post(
 	"",
 	ensureTokenIsValidMiddleware,
 	ensureDataIsValidMiddleware(scheduleCreateSchema),
-	ensureAdminMiddleware,
 	createSchedulesController
 );
 
