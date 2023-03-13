@@ -5,7 +5,7 @@ import {
 	iCategoryRepo,
 } from "../../interfaces/categories.interfaces";
 
-const getAllCategoriesService = async (): Promise<iCategory[]> => {
+const getAllCategoriesService = async (): Promise<Category[]> => {
 	const categoryRepo: iCategoryRepo = AppDataSource.getRepository(Category);
 
 	const categories = await categoryRepo.find();

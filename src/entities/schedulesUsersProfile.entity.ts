@@ -13,13 +13,13 @@ class Schedule {
 	@Column({ type: "time" })
 	hour: string;
 
-	@ManyToOne(() => User, (user) => user.schedule, {
+	@ManyToOne(() => User, (user) => user.schedules, {
 		onDelete: "CASCADE",
 		nullable: false,
 	})
 	user: User;
 
-	@ManyToOne(() => RealEstate, (realEstate) => realEstate.schedule, {
+	@ManyToOne(() => RealEstate, (realEstate) => realEstate.schedules, {
 		onDelete: "RESTRICT",
 		nullable: false,
 	})

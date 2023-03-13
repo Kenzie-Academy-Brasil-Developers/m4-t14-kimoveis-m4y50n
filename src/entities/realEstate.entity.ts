@@ -36,9 +36,9 @@ class RealEstate {
 	@OneToMany(() => Schedule, (schedule) => schedule.realEstate, {
 		onDelete: "RESTRICT",
 	})
-	schedule: Schedule[];
+	schedules: Schedule[];
 
-	@OneToOne(() => Address, { nullable: false })
+	@OneToOne(() => Address)
 	@JoinColumn()
 	address: Address;
 

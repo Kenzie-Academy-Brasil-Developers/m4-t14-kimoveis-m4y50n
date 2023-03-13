@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
+import { RealEstate } from "../entities";
 import {
-	iRealEstate,
 	iRealEstateAddress,
+	iRealEstateCreate,
 } from "../interfaces/realEstate.interfaces";
 import createRealEstateService from "../services/realEstate/createRealEstate.service";
 import getAllRealEstateService from "../services/realEstate/getAllRealEstate.service";
@@ -19,9 +20,9 @@ const createRealEstateController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	const payload: any = req.body;
+	const payload: iRealEstateCreate = req.body;
 
-	const realEstate: iRealEstateAddress = await createRealEstateService(payload);
+	const realEstate: RealEstate[] = await createRealEstateService(payload);
 
 	return res.status(201).json(realEstate);
 };

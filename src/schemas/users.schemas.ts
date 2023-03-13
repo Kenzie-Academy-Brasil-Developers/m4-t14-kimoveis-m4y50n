@@ -1,12 +1,11 @@
-import { hashSync } from "bcryptjs";
 import { z } from "zod";
 
 const usersSchema = z.object({
 	id: z.number(),
 	name: z.string().min(3).max(45),
-	email: z.string().max(45),
+	email: z.string().email().max(45),
 	admin: z.boolean().default(false),
-	password: z.string().min(8).max(120),
+	password: z.string().min(4).max(120),
 	createdAt: z.string(),
 	updatedAt: z.string(),
 	deletedAt: z.string().nullable(),
@@ -21,7 +20,7 @@ const usersCreateSchema = usersSchema.omit({
 	deletedAt: true,
 });
 
-const usersUpdateSchema = usersCreateSchema.partial();
+const usersUpdateSchema = usersWithoutPassSchema.partial();
 
 export {
 	usersSchema,

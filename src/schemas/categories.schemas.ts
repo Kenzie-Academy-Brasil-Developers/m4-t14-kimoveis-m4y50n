@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { realEstateSchema } from "./realEstate.schemas";
 
 const categoriesSchema = z.object({
 	id: z.number(),
@@ -7,4 +8,8 @@ const categoriesSchema = z.object({
 
 const createCategoriesSchema = categoriesSchema.omit({ id: true });
 
-export { categoriesSchema, createCategoriesSchema };
+const realEstateByCategorySchema = createCategoriesSchema.extend({
+	realEstate: realEstateSchema,
+});
+
+export { categoriesSchema, createCategoriesSchema, realEstateByCategorySchema };

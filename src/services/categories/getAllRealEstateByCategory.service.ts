@@ -1,31 +1,27 @@
 import { AppDataSource } from "../../data-source";
-import { RealEstate } from "../../entities";
-import {
-	iRealEstateAddress,
-	iRealEstateRepo,
-} from "../../interfaces/realEstate.interfaces";
+import { Category } from "../../entities";
+import { AppError } from "../../errors";
+import { iCategoryRepo } from "../../interfaces/categories.interfaces";
 
 const getAllRealEstateByCategoryService = async (
 	categoryId: number
-): Promise<iRealEstateAddress[]> => {
-	const realEstateRepo: iRealEstateRepo =
-		AppDataSource.getRepository(RealEstate);
+): Promise<Category> => {
+	const categoryRepo: iCategoryRepo = AppDataSource.getRepository(Category);
 
-	const realEstateByCategory: any = await realEstateRepo.find({
+	const realEstateByCategory = await categoryRepo.find({
 		relations: {
-			category: true,
-			address: true,
+			realEstate: true,
 		},
 		where: {
-			category: {
-				id: categoryId,
-			},
+			id: categoryId,
 		},
 	});
 
-	const resRealEstateByCategory: iRealEstateAddress[] = realEstateByCategory;
+	if (!realEstateByCategory.length) {
+		throw new AppError("Category not found", 404);
+	}
 
-	return resRealEstateByCategory;
+	return realEstateByCategory[0];
 };
 
 export default getAllRealEstateByCategoryService;

@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 const loginService = async (loginDate: iLoginRequest): Promise<string> => {
-	const usersRepo: iUsersRepo = await AppDataSource.getRepository(User);
+	const usersRepo: iUsersRepo = AppDataSource.getRepository(User);
 
 	const user = await usersRepo.find({
 		where: {
@@ -17,7 +17,7 @@ const loginService = async (loginDate: iLoginRequest): Promise<string> => {
 	});
 
 	if (!user.length) {
-		throw new AppError("Wrong email or password", 401);
+		throw new AppError("Invalid credentials", 401);
 	}
 
 	const matchPass: boolean = await compare(
@@ -26,7 +26,7 @@ const loginService = async (loginDate: iLoginRequest): Promise<string> => {
 	);
 
 	if (!matchPass) {
-		throw new AppError("Wrong email or password", 401);
+		throw new AppError("Invalid credentials", 401);
 	}
 
 	const token: string = jwt.sign(

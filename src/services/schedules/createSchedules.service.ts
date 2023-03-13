@@ -6,7 +6,7 @@ import { iSchedulesRepo } from "../../interfaces/schedules.interfaces";
 import { iUsersRepo } from "../../interfaces/users.interfaces";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
-const createSchedulesService = async (payload: any): Promise<any> => {
+const createSchedulesService = async (payload: any): Promise<String> => {
 	const schedulesRepo: iSchedulesRepo = AppDataSource.getRepository(Schedule),
 		realEstateRepo: iRealEstateRepo = AppDataSource.getRepository(RealEstate),
 		userRepo: iUsersRepo = AppDataSource.getRepository(User);
@@ -16,7 +16,7 @@ const createSchedulesService = async (payload: any): Promise<any> => {
 	});
 
 	if (!realEstate) {
-		throw new AppError("Real Estate not found", 404);
+		throw new AppError("RealEstate not found", 404);
 	}
 
 	const user = await userRepo.findOneBy({ id: payload.userId });
@@ -36,18 +36,21 @@ const createSchedulesService = async (payload: any): Promise<any> => {
 
 	//Schedules validation
 	if (scheduleExists) {
-		throw new AppError("Schedule already exists", 409);
+		throw new AppError(
+			"Schedule to this real estate at this date and time already exists",
+			409
+		);
 	}
 
 	if (payload.hour > "18:00" || payload.hour < "08:00") {
-		throw new AppError("We work from 8 am to 6 pm", 400);
+		throw new AppError("Invalid hour, available times are 8AM to 18PM", 400);
 	}
 
 	const newDate = new Date(payload.date),
 		wkendDay = newDate.getDay();
 
 	if (wkendDay === 0 || wkendDay === 6) {
-		throw new AppError("We only work from monday to friday", 400);
+		throw new AppError("Invalid date, work days are monday to friday", 400);
 	}
 
 	const userAlreadySchedule = await schedulesRepo.findOneBy({
@@ -56,19 +59,21 @@ const createSchedulesService = async (payload: any): Promise<any> => {
 	});
 
 	if (userAlreadySchedule) {
-		throw new AppError("You already have a schedule for this date");
+		throw new AppError(
+			"User schedule to this real estate at this date and time already exists"
+		);
 	}
 	//Schedules validation
 
 	const schedule = schedulesRepo.create({
 		...payload,
-		realEstate,
+		realEstate: realEstate,
 		user: usersWithoutPassSchema.parse(user),
 	});
 
 	await schedulesRepo.save(schedule);
 
-	return schedule;
+	return "Schedule created";
 };
 
 export default createSchedulesService;

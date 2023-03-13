@@ -3,10 +3,13 @@ import { Category } from "../../entities";
 import { AppError } from "../../errors";
 import {
 	iCategory,
+	iCategoryCreate,
 	iCategoryRepo,
 } from "../../interfaces/categories.interfaces";
 
-const createCategoriesService = async (payload: any): Promise<iCategory> => {
+const createCategoriesService = async (
+	payload: iCategoryCreate
+): Promise<iCategory> => {
 	const categoryRepo: iCategoryRepo = AppDataSource.getRepository(Category);
 
 	const categoryExists = await categoryRepo.findOne({
@@ -17,15 +20,19 @@ const createCategoriesService = async (payload: any): Promise<iCategory> => {
 		throw new AppError("Category already exists", 409);
 	}
 
-	const category = await categoryRepo
-		.createQueryBuilder()
-		.insert()
-		.into(Category)
-		.values([payload])
-		.returning("*")
-		.execute();
+	// const category = await categoryRepo
+	// 	.createQueryBuilder()
+	// 	.insert()
+	// 	.into(Category)
+	// 	.values([payload])
+	// 	.returning("*")
+	// 	.execute();
 
-	return category.raw[0];
+	const category: Category = categoryRepo.create(payload);
+
+	await categoryRepo.save(category);
+
+	return category;
 };
 
 export default createCategoriesService;

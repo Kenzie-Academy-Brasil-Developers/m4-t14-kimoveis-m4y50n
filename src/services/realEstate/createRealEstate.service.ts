@@ -4,32 +4,35 @@ import { AppError } from "../../errors";
 import { iAddresses } from "../../interfaces/addresses.interfaces";
 import { iCategoryRepo } from "../../interfaces/categories.interfaces";
 import {
-	iRealEstate,
+	iRealEstateCreate,
 	iRealEstateRepo,
 } from "../../interfaces/realEstate.interfaces";
+import { addressesCreateSchema } from "../../schemas/addresses.schemas";
 import createAddressesService from "../addresses/createAddresses.service";
 
-const createRealEstateService = async (payload: any): Promise<any> => {
+const createRealEstateService = async (
+	payload: iRealEstateCreate
+): Promise<RealEstate[]> => {
 	const realEstateRepo: iRealEstateRepo =
 			AppDataSource.getRepository(RealEstate),
 		categoryRepo: iCategoryRepo = AppDataSource.getRepository(Category);
 
 	const { address: addressData, ...realEstateData } = payload;
 
-	const category = await categoryRepo.findOne({
-		where: {
-			id: realEstateData.categoryId,
-		},
+	//create address and retrive
+	const address: iAddresses = await createAddressesService(
+		addressesCreateSchema.parse(addressData)
+	);
+
+	const category = await categoryRepo.findOneBy({
+		id: realEstateData.categoryId,
 	});
 
 	if (!category) {
 		throw new AppError("Category not found", 404);
 	}
 
-	//create address and retrive addressId
-	const address: iAddresses = await createAddressesService(addressData);
-
-	const realEstateValidateData: iRealEstate = {
+	const realEstateValidateData: any = {
 		...realEstateData,
 		address: address,
 		category: category,

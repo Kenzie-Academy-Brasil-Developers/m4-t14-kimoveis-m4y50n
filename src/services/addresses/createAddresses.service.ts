@@ -3,11 +3,12 @@ import { Address } from "../../entities";
 import { AppError } from "../../errors";
 import {
 	iAddresses,
+	iAddressesCreate,
 	iAddressesRepo,
 } from "../../interfaces/addresses.interfaces";
 
 const createAddressesService = async (
-	addressData: any
+	addressData: iAddressesCreate
 ): Promise<iAddresses> => {
 	const addressRepo: iAddressesRepo = AppDataSource.getRepository(Address);
 
@@ -24,15 +25,19 @@ const createAddressesService = async (
 		throw new AppError("Address already exists", 409);
 	}
 
-	const address = await addressRepo
-		.createQueryBuilder()
-		.insert()
-		.into(Address)
-		.values([addressData])
-		.returning("*")
-		.execute();
+	// const address = await addressRepo
+	// 	.createQueryBuilder()
+	// 	.insert()
+	// 	.into(Address)
+	// 	.values([addressData])
+	// 	.returning("*")
+	// 	.execute();
 
-	return address.raw[0];
+	const address: Address = addressRepo.create(addressData as Address);
+
+	await addressRepo.save(address);
+
+	return address;
 };
 
 export default createAddressesService;

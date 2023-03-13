@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { iSchedules } from "../interfaces/schedules.interfaces";
+import { Schedule } from "../entities";
+import { iSchedulesCreate } from "../interfaces/schedules.interfaces";
 import createSchedulesService from "../services/schedules/createSchedules.service";
 import allRealEstateSchedulesService from "../services/schedules/getAllRealEstateSchedules.service";
 
@@ -20,9 +21,9 @@ const createSchedulesController = async (
 	req: Request,
 	res: Response
 ): Promise<Response> => {
-	const scheduleData: any = req.body;
+	const scheduleData: iSchedulesCreate = req.body;
 
-	const createSchedule: iSchedules = await createSchedulesService(scheduleData);
+	const createSchedule = await createSchedulesService(scheduleData);
 
 	return res.status(201).json(createSchedule);
 };

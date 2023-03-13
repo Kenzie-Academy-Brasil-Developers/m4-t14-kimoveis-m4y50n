@@ -18,7 +18,9 @@ schedulesRoutes.get(
 );
 schedulesRoutes.post(
 	"",
+	ensureTokenIsValidMiddleware,
 	ensureDataIsValidMiddleware(scheduleCreateSchema),
+	ensureAdminMiddleware,
 	createSchedulesController
 );
 

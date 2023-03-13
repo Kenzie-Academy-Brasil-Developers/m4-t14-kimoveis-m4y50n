@@ -3,14 +3,12 @@ import { RealEstate } from "../../entities";
 import { AppError } from "../../errors";
 import { usersWithoutPassSchema } from "../../schemas/users.schemas";
 
-const getAllRealEstateSchedulesService = async (
-	realEstateId: number
-): Promise<any> => {
+const getAllRealEstateSchedulesService = async (realEstateId: number) => {
 	const schedulesRepo = AppDataSource.getRepository(RealEstate);
 
 	const allRealStateSchedules: any = await schedulesRepo.findOne({
 		relations: {
-			schedule: {
+			schedules: {
 				user: true,
 			},
 			address: true,
@@ -22,14 +20,14 @@ const getAllRealEstateSchedulesService = async (
 	});
 
 	if (!allRealStateSchedules) {
-		throw new AppError("Real Estate not found", 404);
+		throw new AppError("RealEstate not found", 404);
 	}
 
-	allRealStateSchedules.schedule[0].user = usersWithoutPassSchema.parse(
-		allRealStateSchedules.schedule[0].user
-	);
+	// allRealStateSchedules.schedule[0].user = usersWithoutPassSchema.parse(
+	// 	allRealStateSchedules.schedule[0].user
+	// );
 
-	const resAllRealStateSchedules: any[] = allRealStateSchedules;
+	const resAllRealStateSchedules = allRealStateSchedules;
 
 	return resAllRealStateSchedules;
 };
