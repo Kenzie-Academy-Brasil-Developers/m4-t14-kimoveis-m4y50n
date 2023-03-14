@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
-import { iSchedulesCreate } from "../interfaces/schedules.interfaces";
+import {
+	iRealEstateSchedule,
+	iSchedulesCreate,
+} from "../interfaces/schedules.interfaces";
 import createSchedulesService from "../services/schedules/createSchedules.service";
 import allRealEstateSchedulesService from "../services/schedules/getAllRealEstateSchedules.service";
 
@@ -9,9 +12,8 @@ const getAllRealStateSchedulesController = async (
 ): Promise<Response> => {
 	const realEstateId: number = parseInt(req.params.id);
 
-	const allRealStateSchedules = await allRealEstateSchedulesService(
-		realEstateId
-	);
+	const allRealStateSchedules: iRealEstateSchedule =
+		await allRealEstateSchedulesService(realEstateId);
 
 	return res.status(200).json(allRealStateSchedules);
 };

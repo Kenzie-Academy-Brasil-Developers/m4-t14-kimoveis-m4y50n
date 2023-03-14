@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { addressesCreateSchema } from "./addresses.schemas";
+import { addressesCreateSchema, addressesSchema } from "./addresses.schemas";
+import { scheduleSchema } from "./schedules.schemas";
 
 const realEstateSchema = z.object({
 	id: z.number(),
@@ -15,10 +16,20 @@ const realEstateAddressSchema = realEstateSchema.extend({
 	categoryId: z.number(),
 });
 
+const realEstateSchedules = realEstateSchema.extend({
+	schedule: scheduleSchema.array(),
+	address: addressesSchema,
+});
+
 const realEstateCreateSchema = realEstateAddressSchema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
 });
 
-export { realEstateSchema, realEstateCreateSchema, realEstateAddressSchema };
+export {
+	realEstateSchema,
+	realEstateCreateSchema,
+	realEstateSchedules,
+	realEstateAddressSchema,
+};
